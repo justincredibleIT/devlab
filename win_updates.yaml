@@ -1,0 +1,11 @@
+---
+- name: install all updates and reboot as many times as needed
+  hosts: all
+  tasks:
+   - name: install all updates and reboot as many times a needed
+     win_updates:
+       category_names:
+         - SecurityUpdates
+         - CriticalUpdates
+       reboot: yes
+

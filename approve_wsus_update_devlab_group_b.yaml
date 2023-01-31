@@ -1,8 +1,0 @@
----
-- name: Approve all updates for DEVLAB WSUS Group B
-  hosts: all
-  tasks:
-   - name: Approve all updates for DEVLAB WSUS Group B
-     ansible.windows.win_powershell:
-       script: |
-         Get-WsusUpdate -Classification All -Approval AnyExceptDeclined -Status FailedOrNeeded | Approve-WsusUpdate -Action Install -TargetGroupName "WSUS_Group_B"
