@@ -2,5 +2,5 @@
 - name: win ping
   hosts: all
   tasks:
-   - name: win ping
-     win_ping:
+    - name: win ping
+      win_ping:

@@ -2,10 +2,33 @@
 - name: install all updates and reboot as many times as needed
   hosts: all
   tasks:
-   - name: install all updates and reboot as many times a needed
-     win_updates:
-       category_names:
-         - SecurityUpdates
-         - CriticalUpdates
-       reboot: yes
-
+  - name: Handle any error
+    block:
+      - name: install all updates and reboot as many times a needed
+        win_updates:
+          category_names:
+            - SecurityUpdates
+            - CriticalUpdates
+          reboot: yes
+    rescue:
+      - name: if unable to install updates, run old wsus server fix
+        ansible.windows.win_regedit:
+          path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
+          state: absent
+          delete_key: yes
+      - name: Delete Group Policy folder
+        ansible.windows.win_powershell:
+          script: |
+            Remove-Item –path C:\Windows\System32\GroupPolicy
+      - name: Reboot machine
+        ansible.windows.win_reboot:
+      - name: gpupdate
+        ansible.windows.win_powershell:
+          script: |
+            gpupdate /force
+      - name: install all updates and reboot as many times a needed
+        win_updates:
+          category_names:
+            - SecurityUpdates
+            - CriticalUpdates
+          reboot: yes
